@@ -14,8 +14,8 @@ export default async function handler(req, res) {
 
   const basePath = path.join(process.cwd(), 'api');
   const templatecontact = path.join(basePath, 'contact-template.html');
-  const templcustomization = path.join(basePath, 'customization-template1.html');
-  const templatetrade = path.join(basePath, 'trade-template2.html');
+  const templcustomization = path.join(basePath, 'customization-template.html');
+  const templatetrade = path.join(basePath, 'trade-template.html');
 
   let htmlTemplatecontact = fs.readFileSync(templatecontact, 'utf8');
   let htmlTemplcustomization = fs.readFileSync(templcustomization, 'utf8');
