@@ -12,19 +12,33 @@ export default async function handler(req, res) {
 
   const data = req.body;
 
-  // Load the HTML template
-const templatePath = path.join(__dirname, 'email-template.html');
-  let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+  const basePath = path.join(process.cwd(), 'api');
+  const templatecontact = path.join(basePath, 'contact-template.html');
+  const templcustomization = path.join(basePath, 'customization-template1.html');
+  const templatetrade = path.join(basePath, 'trade-template2.html');
 
-  // Replace placeholders with form data
-  htmlTemplate = htmlTemplate
+  let htmlTemplatecontact = fs.readFileSync(templatecontact, 'utf8');
+  let htmlTemplcustomization = fs.readFileSync(templcustomization, 'utf8');
+  let htmlTtemplatetrade = fs.readFileSync(templatetrade, 'utf8');
+
+  let selectedTemplate = htmlTemplatecontact;
+  let subject = 'Thank You for Contacting The Rural Art'; 
+  if (data.current_page === 'customization-services') {
+    subject = "Thank You for Your Customization Request – We're Excited to Create Something Special"
+    selectedTemplate = htmlTemplcustomization;
+  } else if (data.current_page === 'trade-design-sign-up') {
+    subject = "Thank You for Connecting with The Rural Art Trade Program"
+    selectedTemplate = htmlTtemplatetrade;
+  }
+
+  selectedTemplate = selectedTemplate
     .replace('{{ name }}', data["contact[Name]"] || '')
     .replace('{{ email }}', data["contact[email]"] || '')
     .replace('{{ phone }}', data["contact[Phone number]"] || '')
     .replace('{{ comment }}', data["contact[Comment]"] || '')
     .replace('{{ current_page }}', data.current_page || '');
 
-  // Setup Nodemailer
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -33,12 +47,11 @@ const templatePath = path.join(__dirname, 'email-template.html');
     },
   });
 
-  // Send email to customer
   const mailOptions = {
     from: process.env.MAIL_USER,
     to: data["contact[email]"],
-    subject: 'Thanks for contacting The Rural Art!',
-    html: htmlTemplate, // ✅ HTML template here
+    subject: subject,
+    html: selectedTemplate,
   };
 
   try {
