@@ -33,10 +33,10 @@ export default async function handler(req, res) {
 
   selectedTemplate = selectedTemplate
     .replace('{{ name }}', data["contact[Name]"] || '')
-    .replace('{{ email }}', data["contact[email]"] || '')
-    .replace('{{ phone }}', data["contact[Phone number]"] || '')
-    .replace('{{ comment }}', data["contact[Comment]"] || '')
-    .replace('{{ current_page }}', data.current_page || '');
+    // .replace('{{ email }}', data["contact[email]"] || '')
+    // .replace('{{ phone }}', data["contact[Phone number]"] || '')
+    // .replace('{{ comment }}', data["contact[Comment]"] || '')
+    // .replace('{{ current_page }}', data.current_page || '');
 
 
   const transporter = nodemailer.createTransport({
