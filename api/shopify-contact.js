@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   const data = req.body;
 
   // Load the HTML template
-  const templatePath = path.resolve('templates/email-template.html');
+const templatePath = path.join(__dirname, 'email-template.html');
   let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
   // Replace placeholders with form data
