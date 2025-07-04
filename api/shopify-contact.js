@@ -1,34 +1,34 @@
-import fs from 'fs';
-import path from 'path';
+import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
-  // CORS headers to allow requests from anywhere (or specify Shopify domain)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end(); // CORS preflight OK
-  }
+  const contactData = req.body;
 
-  // Reject other non-POST methods
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'sandeep@mindwebtree.com',
+      pass: 'buorhuloepstxsdr',
+    },
+  });
+
+  const mailOptions = {
+    from: 'tanish@mindwebtree.com',
+    to: 'shyam@mindwebtree.com',
+    subject: `New Shopify Form Submission`,
+    text: JSON.stringify(contactData, null, 2),
+  };
 
   try {
-    const contactData = req.body;
-
-    // Log data to file (only works locally)
-    const logLine = `[${new Date().toISOString()}] ${JSON.stringify(contactData)}\n`;
-    const logPath = path.resolve('log.txt');
-
-    fs.appendFileSync(logPath, logLine, 'utf8');
-
-    return res.status(200).json({ message: 'Logged locally to log.txt' });
+    await transporter.sendMail(mailOptions);
+    return res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
-    console.error('Logging failed:', error);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('Email send error:', error);
+    return res.status(500).json({ message: 'Failed to send email' });
   }
 }
