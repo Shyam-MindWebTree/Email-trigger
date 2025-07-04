@@ -7,15 +7,11 @@ export default async function handler(req, res) {
   }
 
   const contactData = req.body;
-  console.log('Received contact data:', contactData);
-
-  // Prepare log line
   const logLine = `[${new Date().toISOString()}] ${JSON.stringify(contactData)}\n`;
 
-  // Write to logs/contact-log.txt
-  const logPath = path.resolve('./logs/contact-log.txt');
-  fs.mkdirSync(path.dirname(logPath), { recursive: true });
+  // Ensure path points to project root
+  const logPath = path.resolve('log.txt');
   fs.appendFileSync(logPath, logLine, 'utf8');
 
-  return res.status(200).json({ message: 'Data received and logged' });
+  return res.status(200).json({ message: 'Logged locally to log.txt' });
 }
